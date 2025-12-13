@@ -1,26 +1,61 @@
 const express = require('express');
 const router = express.Router();
 const bookingsController = require('../controller/bookingController');
+const { authenticate, authorize } = require('../midellware/auth');
 
-// GET /api/bookings - List all bookings
-router.get('/', bookingsController.listBookings);
+// ADMIN → view all bookings
+router.get(
+  '/',
+  authenticate,
+  authorize('ADMIN'),
+  bookingsController.listBookings
+);
 
-// GET /api/bookings/:id - Get specific booking
-router.get('/:id', bookingsController.getBooking);
+// USER / ADMIN → get specific booking (ownership check in controller)
+router.get(
+  '/:id',
+  authenticate,
+  bookingsController.getBooking
+);
 
-// POST /api/bookings/:showId - Create booking for show
-router.post('/:showId', bookingsController.createBooking);
+// USER → create booking
+router.post(
+  '/:showId',
+  authenticate,
+  authorize('USER'),
+  bookingsController.createBooking
+);
 
-// POST /api/bookings/:id/confirm - Confirm booking (payment)
-router.post('/:id/confirm', bookingsController.confirmBooking);
+// USER → confirm booking (payment)
+router.post(
+  '/:id/confirm',
+  authenticate,
+  authorize('USER'),
+  bookingsController.confirmBooking
+);
 
-// POST /api/bookings/:id/fail - Mark as failed
-router.post('/:id/fail', bookingsController.failBooking);
+// USER → fail booking
+router.post(
+  '/:id/fail',
+  authenticate,
+  authorize('USER'),
+  bookingsController.failBooking
+);
 
-// PUT /api/bookings/:id - Update booking
-router.put('/:id', bookingsController.updateBooking);
+// USER → update booking (name only)
+router.put(
+  '/:id',
+  authenticate,
+  authorize('USER'),
+  bookingsController.updateBooking
+);
 
-// DELETE /api/bookings/:id - Cancel booking
-router.delete('/:id', bookingsController.cancelBooking);
+// USER → cancel booking
+router.delete(
+  '/:id',
+  authenticate,
+  authorize('USER'),
+  bookingsController.cancelBooking
+);
 
 module.exports = router;

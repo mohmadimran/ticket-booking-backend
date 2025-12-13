@@ -5,27 +5,35 @@ const bookingsService = require('../servicess/bookingServices');
 // -----------------------------------------------
 async function listBookings(req, res) {
   try {
+    if (req.user.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     const bookings = await bookingsService.listBookings();
     res.json(bookings);
   } catch (err) {
-    console.error("Error listing bookings:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
+
 
 // -----------------------------------------------
 // GET /api/bookings/:id --> Get a booking by ID
 // -----------------------------------------------
 async function getBooking(req, res) {
   try {
-    const { id } = req.params;
-    const booking = await bookingsService.getBooking(id);
-
+    const booking = await bookingsService.getBooking(req.params.id);
     if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    if (
+      booking.userId.toString() !== req.user.id &&
+      req.user.role !== 'ADMIN'
+    ) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
 
     res.json(booking);
   } catch (err) {
-    console.error("Error fetching booking:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -36,17 +44,16 @@ async function getBooking(req, res) {
 async function createBooking(req, res) {
   try {
     const { showId } = req.params;
-    const { user_name, seats } = req.body;
+    const { seats } = req.body;
 
-    if (!user_name || !seats)
-      return res.status(400).json({ error: "user_name and seats are required" });
-
-    if (typeof seats !== "number" || seats <= 0)
+    if (!seats || typeof seats !== "number" || seats <= 0) {
       return res.status(400).json({ error: "seats must be a positive number" });
+    }
 
     const booking = await bookingsService.createBooking({
       showId,
-      userName: user_name,
+      userId: req.user.id,        // from JWT
+      userName: req.user.name,    //  from JWT
       seats
     });
 
@@ -54,24 +61,29 @@ async function createBooking(req, res) {
 
   } catch (err) {
     console.error("Error creating booking:", err);
-    const status = err.status || 500;
-    res.status(status).json({ error: err.message || "Internal server error" });
+    res.status(err.status || 500).json({ error: err.message });
   }
 }
+
 
 // -----------------------------------------------
 // POST /api/bookings/:id/confirm --> Confirm booking
 // -----------------------------------------------
 async function confirmBooking(req, res) {
   try {
-    const { id } = req.params;
-    const updated = await bookingsService.confirmBooking(id);
+    const booking = await bookingsService.getBooking(req.params.id);
 
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    if (booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const updated = await bookingsService.confirmBooking(req.params.id);
     res.json(updated);
+
   } catch (err) {
-    console.error("Error confirming booking:", err);
-    const status = err.status || 500;
-    res.status(status).json({ error: err.message || "Internal server error" });
+    res.status(err.status || 500).json({ error: err.message });
   }
 }
 
@@ -80,14 +92,17 @@ async function confirmBooking(req, res) {
 // -----------------------------------------------
 async function failBooking(req, res) {
   try {
-    const { id } = req.params;
-    const updated = await bookingsService.failBooking(id);
+    const booking = await bookingsService.getBooking(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
+    if (booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const updated = await bookingsService.failBooking(req.params.id);
     res.json(updated);
   } catch (err) {
-    console.error("Error marking booking as failed:", err);
-    const status = err.status || 500;
-    res.status(status).json({ error: err.message || "Internal server error" });
+    res.status(err.status || 500).json({ error: err.message });
   }
 }
 
@@ -96,35 +111,42 @@ async function failBooking(req, res) {
 // -----------------------------------------------
 async function updateBooking(req, res) {
   try {
-    const { id } = req.params;
+    const booking = await bookingsService.getBooking(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
-    const updated = await bookingsService.updateBooking(id, req.body);
-    if (!updated) return res.status(404).json({ error: "Booking not found" });
+    if (booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
 
+    const updated = await bookingsService.updateBooking(req.params.id, req.body);
     res.json(updated);
   } catch (err) {
-    console.error("Error updating booking:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
+
 
 // -----------------------------------------------
 // DELETE /api/bookings/:id --> Cancel a booking
 // -----------------------------------------------
 async function cancelBooking(req, res) {
   try {
-    const { id } = req.params;
-    const deleted = await bookingsService.cancelBooking(id);
+    const booking = await bookingsService.getBooking(req.params.id);
 
-    if (!deleted) return res.status(404).json({ error: "Booking not found" });
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
 
+    if (booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    await bookingsService.cancelBooking(req.params.id);
     res.json({ message: "Booking cancelled successfully" });
 
   } catch (err) {
-    console.error("Error cancelling booking:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
 
 module.exports = {
   listBookings,

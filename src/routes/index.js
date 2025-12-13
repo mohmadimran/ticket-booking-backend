@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const showsRouter = require('./show'); 
-// const bookingsRouter = require('./booking'); 
-
-
-router.use('/shows', showsRouter);
-router.use('/bookings',  require('./booking'));
+const showRoutes = require('./show'); 
+const bookingRoutes = require('./booking'); 
+const authRoutes = require("./auth")
+router.use('/auth', authRoutes);
+router.use('/shows', showRoutes);
+router.use('/bookings', bookingRoutes);
 
 module.exports = router;
