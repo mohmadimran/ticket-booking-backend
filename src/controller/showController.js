@@ -2,11 +2,13 @@ const showsService = require('../servicess/showServicess');
 
 async function createShow(req, res) {
   try {
-    const { name, start_time, total_seats } = req.body;
-    if (!name || !start_time || typeof total_seats !== 'number') {
-      return res.status(400).json({ error: 'name, start_time and total_seats are required' });
+  const { name, startTime, totalSeats } = req.body;
+    if (!name || !startTime || typeof totalSeats !== "number") {
+      return res.status(400).json({ error: 'name, start time and total seats are required' });
     }
-    const show = await showsService.createShow({ name, startTime: new Date(start_time), totalSeats: total_seats });
+    const show = await showsService.createShow({name,
+    startTime: new Date(startTime),
+    totalSeats });
     res.status(201).json(show);
   } catch (err) {
     console.error(err);
