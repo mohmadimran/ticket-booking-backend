@@ -1,20 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const showsController = require('../controller/showController');
-const { authenticate, authorize } = require('../midellware/auth');
 
-// ADMIN only → create show
+const showsController = require("../controller/showController");
+const { authenticate, authorize } = require("../midellware/auth");
+
 router.post(
-  '/show/',
+  "/show",
   authenticate,
-  authorize('ADMIN'),
+  authorize("ADMIN"),
   showsController.createShow
 );
 
-// Public → list shows
-router.get('/shows/', showsController.listShows);
+router.put(
+  "/show/:id",
+  authenticate,
+  authorize("ADMIN"),
+  showsController.updateShow
+);
 
-// Public → get single show
-router.get('/show/:id', showsController.getShow);
+router.delete(
+  "/show/:id",
+  authenticate,
+  authorize("ADMIN"),
+  showsController.deleteShow
+);
+
+router.get("/shows", showsController.listShows);
+
+router.get("/show/:id", showsController.getShow);
 
 module.exports = router;
