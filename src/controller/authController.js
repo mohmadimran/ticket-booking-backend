@@ -23,16 +23,44 @@ async function register(req, res) {
 
 // Login
 async function login(req, res) {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+    const user = await User.findOne({ email });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!user) {
+      return res.status(400).json({
+        error: "Invalid credentials",
+      });
+    }
 
-  const token = generateToken(user);
-  res.json({ token, role: user.role });
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(400).json({
+        error: "Invalid credentials",
+      });
+    }
+
+    const token = generateToken(user);
+
+    res.status(200).json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  }
 }
+
 
 module.exports = { register, login };
