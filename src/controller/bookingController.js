@@ -73,8 +73,20 @@ async function createBooking(req, res) {
   }
 }
 
+// get user booking
+async function getMyBookings(req, res) {
+  try {
+    const bookings = await bookingsService.getMyBookings(req.user.id);
 
+    res.json(bookings);
+  } catch (err) {
+    console.error(err);
 
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+}
 
 // -----------------------------------------------
 // POST /api/bookings/:id/confirm --> Confirm booking
@@ -162,6 +174,7 @@ module.exports = {
   listBookings,
   getBooking,
   createBooking,
+  getMyBookings,
   confirmBooking,
   failBooking,
   updateBooking,

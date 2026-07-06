@@ -81,6 +81,12 @@ async function createBooking({
     };
   }
 }
+
+async function getMyBookings(userId) {
+  return Booking.find({ userId })
+    .populate("showId")
+    .sort({ createdAt: -1 });
+}
 // ------------------------------------------------------
 // CONFIRM BOOKING (Payment success)
 // ------------------------------------------------------
@@ -208,6 +214,7 @@ async function findAndFailExpiredBookings(expirySeconds = 120) {
 
 module.exports = {
   createBooking,
+  getMyBookings,
   confirmBooking,
   failBooking,
   getBooking,

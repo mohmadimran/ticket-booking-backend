@@ -5,10 +5,16 @@ const { authenticate, authorize } = require('../midellware/auth');
 
 // ADMIN → view all bookings
 router.get(
-  'bookings/',
+  '/bookings/',
   authenticate,
   authorize('ADMIN'),
   bookingsController.listBookings
+);
+router.get(
+  "/my-bookings",
+  authenticate,
+  authorize("USER"),
+  bookingsController.getMyBookings
 );
 
 // USER / ADMIN → get specific booking (ownership check in controller)
