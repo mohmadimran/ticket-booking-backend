@@ -81,7 +81,7 @@ async function createBooking({
     };
   }
 }
-
+//  get my booking 
 async function getMyBookings(userId) {
   return Booking.find({ userId })
     .populate("showId")
