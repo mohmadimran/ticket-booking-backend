@@ -13,14 +13,14 @@ router.get(
 
 // USER / ADMIN → get specific booking (ownership check in controller)
 router.get(
-  '/booking/:id',
+  '/bookings/:id',
   authenticate,
   bookingsController.getBooking
 );
 
 // USER → create booking
 router.post(
-  'booking/:showId',
+  '/bookings/:showId',
   authenticate,
   authorize('USER'),
   bookingsController.createBooking
@@ -28,7 +28,7 @@ router.post(
 
 // USER → confirm booking (payment)
 router.post(
-  '/booking/:id/confirm',
+  '/bookings/:id/confirm',
   authenticate,
   authorize('USER'),
   bookingsController.confirmBooking
@@ -36,7 +36,7 @@ router.post(
 
 // USER → fail booking
 router.post(
-  '/booking/:id/fail',
+  '/bookings/:id/fail',
   authenticate,
   authorize('USER'),
   bookingsController.failBooking
@@ -44,7 +44,7 @@ router.post(
 
 // USER → update booking (name only)
 router.put(
-  '/booking/:id',
+  '/bookings/:id',
   authenticate,
   authorize('USER'),
   bookingsController.updateBooking
@@ -52,7 +52,7 @@ router.put(
 
 // USER → cancel booking
 router.delete(
-  '/booking/:id',
+  '/bookings/:id',
   authenticate,
   authorize('USER'),
   bookingsController.cancelBooking
