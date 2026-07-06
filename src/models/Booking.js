@@ -18,7 +18,10 @@ const BookingSchema = new Schema(
       type: String,
       required: true,
     },
-
+    showName: {
+      type: String,
+      required: true,
+    },
     seats: {
       type: Number,
       required: true,
