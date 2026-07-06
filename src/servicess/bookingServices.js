@@ -191,6 +191,7 @@ async function cancelBooking(bookingId) {
   return Booking.findByIdAndDelete(bookingId).lean().exec();
 }
 
+
 // ------------------------------------------------------
 // AUTO FAIL EXPIRED BOOKINGS
 // ------------------------------------------------------
