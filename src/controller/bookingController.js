@@ -41,29 +41,39 @@ async function getBooking(req, res) {
 // -----------------------------------------------
 // POST /api/bookings/:showId  --> Create booking
 // -----------------------------------------------
+
 async function createBooking(req, res) {
   try {
     const { showId } = req.params;
     const { seats } = req.body;
 
-    if (!seats || typeof seats !== "number" || seats <= 0) {
-      return res.status(400).json({ error: "seats must be a positive number" });
+    if (!Number.isInteger(seats) || seats <= 0) {
+      return res.status(400).json({
+        error: "Seats must be greater than 0",
+      });
     }
 
     const booking = await bookingsService.createBooking({
       showId,
-      userId: req.user.id,        // from JWT
-      userName: req.user.name,    //  from JWT
-      seats
+      userId: req.user.id,
+      userName: req.user.name,
+      seats,
     });
 
-    res.status(201).json(booking);
-
+    res.status(201).json({
+      message: "Booking created successfully.",
+      booking,
+    });
   } catch (err) {
-    console.error("Error creating booking:", err);
-    res.status(err.status || 500).json({ error: err.message });
+    console.error(err);
+
+    res.status(err.status || 500).json({
+      error: err.message || "Internal Server Error",
+    });
   }
 }
+
+
 
 
 // -----------------------------------------------

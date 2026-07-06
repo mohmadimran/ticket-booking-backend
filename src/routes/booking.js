@@ -5,7 +5,7 @@ const { authenticate, authorize } = require('../midellware/auth');
 
 // ADMIN → view all bookings
 router.get(
-  '/',
+  'bookings/',
   authenticate,
   authorize('ADMIN'),
   bookingsController.listBookings
@@ -13,14 +13,14 @@ router.get(
 
 // USER / ADMIN → get specific booking (ownership check in controller)
 router.get(
-  '/:id',
+  '/booking/:id',
   authenticate,
   bookingsController.getBooking
 );
 
 // USER → create booking
 router.post(
-  '/:showId',
+  'booking/:showId',
   authenticate,
   authorize('USER'),
   bookingsController.createBooking
@@ -28,7 +28,7 @@ router.post(
 
 // USER → confirm booking (payment)
 router.post(
-  '/:id/confirm',
+  '/booking/:id/confirm',
   authenticate,
   authorize('USER'),
   bookingsController.confirmBooking
@@ -36,7 +36,7 @@ router.post(
 
 // USER → fail booking
 router.post(
-  '/:id/fail',
+  '/booking/:id/fail',
   authenticate,
   authorize('USER'),
   bookingsController.failBooking
@@ -44,7 +44,7 @@ router.post(
 
 // USER → update booking (name only)
 router.put(
-  '/:id',
+  '/booking/:id',
   authenticate,
   authorize('USER'),
   bookingsController.updateBooking
@@ -52,7 +52,7 @@ router.put(
 
 // USER → cancel booking
 router.delete(
-  '/:id',
+  '/booking/:id',
   authenticate,
   authorize('USER'),
   bookingsController.cancelBooking

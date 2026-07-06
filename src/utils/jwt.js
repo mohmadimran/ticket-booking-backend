@@ -2,13 +2,20 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
-function generateToken(user) {
+
+const generateToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role },
+    {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+    },
     JWT_SECRET,
-    { expiresIn: '1d' }
+    {
+      expiresIn: "1d",
+    }
   );
-}
+};
 
 function verifyToken(token) {
   return jwt.verify(token, JWT_SECRET);

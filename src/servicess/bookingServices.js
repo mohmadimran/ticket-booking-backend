@@ -4,36 +4,83 @@ const Booking = require('../models/Booking');
 // ------------------------------------------------------
 // CREATE BOOKING  (Atomic seat reservation)
 // ------------------------------------------------------
-async function createBooking({ showId, userName, seats }) {
-  if (seats <= 0) throw { status: 400, message: 'seats must be > 0' };
+async function createBooking({
+  showId,
+  userId,
+  userName,
+  seats,
+}) {
+  if (seats <= 0) {
+    throw {
+      status: 400,
+      message: "Seats must be greater than zero",
+    };
+  }
 
   const filter = {
     _id: showId,
-    $expr: { 
+    $expr: {
       $gte: [
-        { $subtract: ['$totalSeats', { $add: ['$reservedSeats', '$confirmedSeats'] }] },
-        seats
-      ] 
-    }
+        {
+          $subtract: [
+            "$totalSeats",
+            {
+              $add: [
+                "$reservedSeats",
+                "$confirmedSeats",
+              ],
+            },
+          ],
+        },
+        seats,
+      ],
+    },
   };
 
-  const update = { $inc: { reservedSeats: seats } };
+  const update = {
+    $inc: {
+      reservedSeats: seats,
+    },
+  };
 
-  const updatedShow = await Show.findOneAndUpdate(filter, update, { new: true }).exec();
-  if (!updatedShow) throw { status: 409, message: 'Not enough seats available' };
+  const updatedShow = await Show.findOneAndUpdate(
+    filter,
+    update,
+    {
+      new: true,
+    }
+  );
 
-  const booking = new Booking({ showId, userName, seats, status: 'PENDING' });
+  if (!updatedShow) {
+    throw {
+      status: 409,
+      message: "Not enough seats available.",
+    };
+  }
 
   try {
-    const saved = await booking.save();
-    return saved.toObject();
+    const booking = await Booking.create({
+      showId,
+      userId,
+      userName,
+      seats,
+      status: "PENDING",
+    });
+
+    return booking;
   } catch (err) {
-    // revert reserved seats
-    await Show.findByIdAndUpdate(showId, { $inc: { reservedSeats: -seats } }).exec();
-    throw { status: 500, message: 'Failed to create booking' };
+    await Show.findByIdAndUpdate(showId, {
+      $inc: {
+        reservedSeats: -seats,
+      },
+    });
+
+    throw {
+      status: 500,
+      message: "Failed to create booking",
+    };
   }
 }
-
 // ------------------------------------------------------
 // CONFIRM BOOKING (Payment success)
 // ------------------------------------------------------

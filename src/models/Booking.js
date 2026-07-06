@@ -1,17 +1,39 @@
-const { Schema, model, Types } = require('mongoose');
+const { Schema, model, Types } = require("mongoose");
 
-const BookingSchema = new Schema({
-  showId: { type: Types.ObjectId, ref: 'Show', required: true },
-  userName: { type: String },
-  seats: { type: Number, required: true, min: 1 },
-  status: { type: String, enum: ['PENDING', 'CONFIRMED', 'FAILED'], required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+const BookingSchema = new Schema(
+  {
+    showId: {
+      type: Types.ObjectId,
+      ref: "Show",
+      required: true,
+    },
 
-BookingSchema.pre('save', function (next) {
-  this.updatedAt = new Date();
-  next();
-});
+    userId: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-module.exports = model('Booking', BookingSchema);
+    userName: {
+      type: String,
+      required: true,
+    },
+
+    seats: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    status: {
+      type: String,
+      enum: ["PENDING", "CONFIRMED", "FAILED"],
+      default: "PENDING",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = model("Booking", BookingSchema);
