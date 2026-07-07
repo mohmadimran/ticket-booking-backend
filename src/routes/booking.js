@@ -21,14 +21,14 @@ router.get(
 );
 
 router.put(
-  "/admin/:id/confirm",
+  "/admin/confirm/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.confirmBooking
 );
 
 router.put(
-  "/admin/:id/reject",
+  "/admin/reject/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.rejectBooking
@@ -102,14 +102,14 @@ router.get(
 // );
 
 router.put(
-  "/user/:id/cancel",
+  "/user/cancel/:id",
   authenticate,
   authorize("USER"),
   bookingsController.cancelBooking
 );
 
 router.put(
-  "/user/update/:id",
+  "/user/update/status/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking

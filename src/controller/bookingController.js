@@ -144,7 +144,7 @@ async function updateBooking(req, res) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const updated = await bookingsService.updateBooking(req.params.id, req.body);
+    const updated = await bookingsService.updateBookingStatus(req.params.id, req.body);
     res.json(updated);
   } catch (err) {
     res.status(500).json({ error: 'Internal server error' });
