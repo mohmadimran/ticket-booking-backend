@@ -1,7 +1,7 @@
 const bookingsService = require('../servicess/bookingServices');
 
 // -----------------------------------------------
-// GET /api/bookings  --> List all bookings
+// GET /api/bookings  --> List all bookings for admin
 // -----------------------------------------------
 async function listBookings(req, res) {
   try {
@@ -39,7 +39,7 @@ async function getBooking(req, res) {
 }
 
 // -----------------------------------------------
-// POST /api/bookings/:showId  --> Create booking
+// POST /api/bookings/:showId  --> Create booking by user
 // -----------------------------------------------
 
 async function createBooking(req, res) {
@@ -77,7 +77,7 @@ async function createBooking(req, res) {
   }
 }
 
-// get user booking
+// get user all bookings
 async function getMyBookings(req, res) {
   try {
     const bookings = await bookingsService.getMyBookings(req.user.id);
@@ -95,42 +95,42 @@ async function getMyBookings(req, res) {
 // -----------------------------------------------
 // POST /api/bookings/:id/confirm --> Confirm booking
 // -----------------------------------------------
-async function confirmBooking(req, res) {
-  try {
-    const booking = await bookingsService.getBooking(req.params.id);
+// async function confirmBooking(req, res) {
+//   try {
+//     const booking = await bookingsService.getBooking(req.params.id);
 
-    if (!booking) return res.status(404).json({ error: "Booking not found" });
+//     if (!booking) return res.status(404).json({ error: "Booking not found" });
 
-    if (booking.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
+//     if (booking.userId.toString() !== req.user.id) {
+//       return res.status(403).json({ error: "Forbidden" });
+//     }
 
-    const updated = await bookingsService.confirmBooking(req.params.id);
-    res.json(updated);
+//     const updated = await bookingsService.confirmBooking(req.params.id);
+//     res.json(updated);
 
-  } catch (err) {
-    res.status(err.status || 500).json({ error: err.message });
-  }
-}
+//   } catch (err) {
+//     res.status(err.status || 500).json({ error: err.message });
+//   }
+// }
 
 // -----------------------------------------------
 // POST /api/bookings/:id/fail --> Mark booking failed
 // -----------------------------------------------
-async function failBooking(req, res) {
-  try {
-    const booking = await bookingsService.getBooking(req.params.id);
-    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+// async function failBooking(req, res) {
+//   try {
+//     const booking = await bookingsService.getBooking(req.params.id);
+//     if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
-    if (booking.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
+//     if (booking.userId.toString() !== req.user.id) {
+//       return res.status(403).json({ error: 'Forbidden' });
+//     }
 
-    const updated = await bookingsService.failBooking(req.params.id);
-    res.json(updated);
-  } catch (err) {
-    res.status(err.status || 500).json({ error: err.message });
-  }
-}
+//     const updated = await bookingsService.failBooking(req.params.id);
+//     res.json(updated);
+//   } catch (err) {
+//     res.status(err.status || 500).json({ error: err.message });
+//   }
+// }
 
 // -----------------------------------------------
 // PUT /api/bookings/:id --> Update booking
@@ -155,32 +155,95 @@ async function updateBooking(req, res) {
 // -----------------------------------------------
 // DELETE /api/bookings/:id --> Cancel a booking
 // -----------------------------------------------
-async function cancelBooking(req, res) {
-  try {
-    const booking = await bookingsService.getBooking(req.params.id);
+// async function cancelBooking(req, res) {
+//   try {
+//     const booking = await bookingsService.getBooking(req.params.id);
 
-    if (!booking) return res.status(404).json({ error: "Booking not found" });
+//     if (!booking) return res.status(404).json({ error: "Booking not found" });
 
-    if (booking.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Forbidden" });
+//     if (booking.userId.toString() !== req.user.id) {
+//       return res.status(403).json({ error: "Forbidden" });
+//     }
+
+//     await bookingsService.cancelBooking(req.params.id);
+//     res.json({ message: "Booking cancelled successfully" });
+
+//   } catch (err) {
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// }
+// cancel booking by user
+async function cancelBooking(req,res){
+try {
+
+        const booking = await bookingsService.cancelBooking(
+            req.params.id,
+            req.user.id
+        );
+
+        if (!booking) {
+            return res.status(404).json({
+                error: "Booking not found"
+            });
+        }
+
+        res.json({
+            message: "Booking cancelled successfully"
+        });
+
+    } catch (err) {
+
+        res.status(400).json({
+            error: err.message
+        });
+
     }
-
-    await bookingsService.cancelBooking(req.params.id);
-    res.json({ message: "Booking cancelled successfully" });
-
-  } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
-  }
 }
 
+// confirm booking by admin
+
+async function confirmBooking(req,res){
+ try {
+
+        const booking =
+            await bookingsService.confirmBooking(req.params.id);
+
+        res.json(booking);
+
+    } catch (err) {
+
+        res.status(400).json({
+            error: err.message
+        });
+
+    }
+
+}
+async function rejectBooking(req,res) {
+    try {
+
+        const booking =
+            await bookingsService.rejectBooking(req.params.id);
+
+        res.json(booking);
+
+    } catch (err) {
+
+        res.status(400).json({
+            error: err.message
+        });
+
+    }
+
+}
 
 module.exports = {
   listBookings,
   getBooking,
   createBooking,
+  updateBooking,
   getMyBookings,
   confirmBooking,
-  failBooking,
-  updateBooking,
-  cancelBooking
+  cancelBooking,
+  rejectBooking
 };

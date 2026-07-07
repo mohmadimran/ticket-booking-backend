@@ -20,28 +20,42 @@ router.get(
   bookingsController.listBookings
 );
 
-// Confirm booking
-router.post(
-  "/admin/confirm/:id",
+router.put(
+  "/admin/:id/confirm",
   authenticate,
   authorize("ADMIN"),
   bookingsController.confirmBooking
 );
 
+router.put(
+  "/admin/:id/reject",
+  authenticate,
+  authorize("ADMIN"),
+  bookingsController.rejectBooking
+);
+
+// Confirm booking
+// router.post(
+//   "/admin/confirm/:id",
+//   authenticate,
+//   authorize("ADMIN"),
+//   bookingsController.confirmBooking
+// );
+
 // cancle booking
 
-router.post(
-  "/admin/cancel/:id",
-  authenticate,
-  authorize("ADMIN"),
-  bookingsController.failBooking
-);
-router.delete(
-  "/admin/delete/:id",
-  authenticate,
-  authorize("ADMIN"),
-  bookingsController.cancelBooking
-);
+// router.post(
+//   "/admin/cancel/:id",
+//   authenticate,
+//   authorize("ADMIN"),
+//   bookingsController.failBooking
+// );
+// router.delete(
+//   "/admin/delete/:id",
+//   authenticate,
+//   authorize("ADMIN"),
+//   bookingsController.cancelBooking
+// );
 
 /* ===========================
    USER ROUTES
@@ -64,27 +78,41 @@ router.get(
 );
 
 // Booking details
-router.get(
-  "/user/detail/:id",
-  authenticate,
-  authorize("USER"),
-  bookingsController.getBooking
-);
+// router.get(
+//   "/user/detail/:id",
+//   authenticate,
+//   authorize("USER"),
+//   bookingsController.getBooking
+// );
 
 // Update booking
+// router.put(
+//   "/user/update/:id",
+//   authenticate,
+//   authorize("USER"),
+//   bookingsController.updateBooking
+// );
+
+// Cancel booking
+// router.delete(
+//   "/user/delete:id",
+//   authenticate,
+//   authorize("USER"),
+//   bookingsController.cancelBooking
+// );
+
+router.put(
+  "/user/:id/cancel",
+  authenticate,
+  authorize("USER"),
+  bookingsController.cancelBooking
+);
+
 router.put(
   "/user/update/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking
-);
-
-// Cancel booking
-router.delete(
-  "/user/delete:id",
-  authenticate,
-  authorize("USER"),
-  bookingsController.cancelBooking
 );
 
 module.exports = router;

@@ -25,7 +25,7 @@ const BookingSchema = new Schema(
         "PENDING",
         "CONFIRMED",
         "CANCELLED",
-        "FAILED"
+        "REJECTED"
       ],
       default: "PENDING"
     }
