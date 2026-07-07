@@ -14,7 +14,7 @@ const {
 
 // Get all bookings
 router.get(
-  "/bookings",
+  "/admin/",
   authenticate,
   authorize("ADMIN"),
   bookingsController.listBookings
@@ -22,21 +22,22 @@ router.get(
 
 // Confirm booking
 router.post(
-  "/bookings/:id/confirm",
+  "/admin/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.confirmBooking
 );
 
-// Fail booking
-// router.post(
-//   "/bookings/:id/cancel",
-//   authenticate,
-//   authorize("ADMIN"),
-//   bookingsController.failBooking
-// );
+// cancle booking
+
+router.post(
+  "/admin/:id",
+  authenticate,
+  authorize("ADMIN"),
+  bookingsController.failBooking
+);
 router.delete(
-  "/bookings/:id",
+  "/admin/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.cancelBooking
@@ -48,7 +49,7 @@ router.delete(
 
 // Create booking
 router.post(
-  "/:showId",
+  "/user/:showId",
   authenticate,
   authorize("USER"),
   bookingsController.createBooking
@@ -56,7 +57,7 @@ router.post(
 
 // My bookings
 router.get(
-  "/my-bookings",
+  "/user/my-bookings",
   authenticate,
   authorize("USER"),
   bookingsController.getMyBookings
@@ -64,7 +65,7 @@ router.get(
 
 // Booking details
 router.get(
-  "/:id",
+  "/user/:id",
   authenticate,
   authorize("USER"),
   bookingsController.getBooking
@@ -72,7 +73,7 @@ router.get(
 
 // Update booking
 router.put(
-  "/:id",
+  "/user/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking
@@ -80,7 +81,7 @@ router.put(
 
 // Cancel booking
 router.delete(
-  "/:id",
+  "/user/:id",
   authenticate,
   authorize("USER"),
   bookingsController.cancelBooking
