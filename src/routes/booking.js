@@ -14,7 +14,7 @@ const {
 
 // Get all bookings
 router.get(
-  "/admin/",
+  "/admin/all-bookings",
   authenticate,
   authorize("ADMIN"),
   bookingsController.listBookings
@@ -22,7 +22,7 @@ router.get(
 
 // Confirm booking
 router.post(
-  "/admin/:id",
+  "/admin/confirm/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.confirmBooking
@@ -31,13 +31,13 @@ router.post(
 // cancle booking
 
 router.post(
-  "/admin/:id",
+  "/admin/cancel/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.failBooking
 );
 router.delete(
-  "/admin/:id",
+  "/admin/delete/:id",
   authenticate,
   authorize("ADMIN"),
   bookingsController.cancelBooking
@@ -49,7 +49,7 @@ router.delete(
 
 // Create booking
 router.post(
-  "/user/:showId",
+  "/user/create/:showId",
   authenticate,
   authorize("USER"),
   bookingsController.createBooking
@@ -65,7 +65,7 @@ router.get(
 
 // Booking details
 router.get(
-  "/user/:id",
+  "/user/detail/:id",
   authenticate,
   authorize("USER"),
   bookingsController.getBooking
@@ -73,7 +73,7 @@ router.get(
 
 // Update booking
 router.put(
-  "/user/:id",
+  "/user/update/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking
@@ -81,7 +81,7 @@ router.put(
 
 // Cancel booking
 router.delete(
-  "/user/:id",
+  "/user/delete:id",
   authenticate,
   authorize("USER"),
   bookingsController.cancelBooking
