@@ -47,6 +47,9 @@ async function createBooking(req, res) {
     const { showId } = req.params;
     const { seats } = req.body;
 
+    console.log("get params id", showId)
+    console.log("get params seat", seats)
+
     if (!Number.isInteger(seats) || seats <= 0) {
       return res.status(400).json({
         error: "Seats must be greater than 0",
@@ -64,7 +67,8 @@ async function createBooking(req, res) {
       message: "Booking created successfully.",
       booking,
     });
-  } catch (err) {
+  }
+   catch (err) {
     console.error(err);
 
     res.status(err.status || 500).json({

@@ -68,18 +68,30 @@ async function createBooking({
     });
 
     return booking;
-  } catch (err) {
-    await Show.findByIdAndUpdate(showId, {
-      $inc: {
-        reservedSeats: -seats,
-      },
+  } 
+  // catch (err) {
+  //   await Show.findByIdAndUpdate(showId, {
+  //     $inc: {
+  //       reservedSeats: -seats,
+  //     },
+  //   });
+
+  //   throw {
+  //     status: 500,
+  //     message: "Failed to create booking",
+  //   };
+  // }
+  catch (err) {
+    console.log("dfine schema error",err);
+
+    await Show.findByIdAndUpdate(showId,{
+        $inc:{
+            reservedSeats:-seats
+        }
     });
 
-    throw {
-      status: 500,
-      message: "Failed to create booking",
-    };
-  }
+    throw err;
+}
 }
 //  get my booking 
 async function getMyBookings(userId) {

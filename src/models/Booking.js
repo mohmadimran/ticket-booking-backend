@@ -18,10 +18,6 @@ const BookingSchema = new Schema(
       type: String,
       required: true,
     },
-    showName: {
-      type: String,
-      required: true,
-    },
     seats: {
       type: Number,
       required: true,
@@ -30,9 +26,14 @@ const BookingSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["PENDING", "CONFIRMED", "FAILED"],
-      default: "PENDING",
-    },
+      enum: [
+        "PENDING",
+        "CONFIRMED",
+        "CANCELLED",
+        "FAILED"
+      ],
+      default: "PENDING"
+    }
   },
   {
     timestamps: true,
