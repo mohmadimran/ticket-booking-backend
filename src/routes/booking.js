@@ -48,7 +48,7 @@ router.delete(
 
 // Create booking
 router.post(
-  "/bookings/:showId",
+  "/:showId",
   authenticate,
   authorize("USER"),
   bookingsController.createBooking
@@ -64,14 +64,15 @@ router.get(
 
 // Booking details
 router.get(
-  "/bookings/:id",
+  "/:id",
   authenticate,
+  authorize("USER"),
   bookingsController.getBooking
 );
 
 // Update booking
 router.put(
-  "/bookings/:id",
+  "/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking
@@ -79,7 +80,7 @@ router.put(
 
 // Cancel booking
 router.delete(
-  "/bookings/:id",
+  "/:id",
   authenticate,
   authorize("USER"),
   bookingsController.cancelBooking
