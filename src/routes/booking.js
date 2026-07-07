@@ -86,12 +86,12 @@ router.get(
 // );
 
 // Update booking
-// router.put(
-//   "/user/update/:id",
-//   authenticate,
-//   authorize("USER"),
-//   bookingsController.updateBooking
-// );
+router.put(
+  "/user/update/:id",
+  authenticate,
+  authorize("USER"),
+  bookingsController.updateBooking
+);
 
 // Cancel booking
 // router.delete(
@@ -109,7 +109,7 @@ router.put(
 );
 
 router.put(
-  "/user/update/status/:id",
+  "/user/update/:id",
   authenticate,
   authorize("USER"),
   bookingsController.updateBooking
