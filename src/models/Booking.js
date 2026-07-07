@@ -13,11 +13,6 @@ const BookingSchema = new Schema(
       ref: "User",
       required: true,
     },
-
-    userName: {
-      type: String,
-      required: true,
-    },
     seats: {
       type: Number,
       required: true,

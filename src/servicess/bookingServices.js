@@ -153,8 +153,23 @@ async function getBooking(bookingId) {
 // ------------------------------------------------------
 // LIST ALL BOOKINGS
 // ------------------------------------------------------
+// async function listBookings() {
+//   return Booking.find().sort({ createdAt: -1 }).lean().exec();
+// }
+
 async function listBookings() {
-  return Booking.find().sort({ createdAt: -1 }).lean().exec();
+  return Booking.find()
+    .populate({
+      path: "showId",
+      select: "name startTime",
+    })
+    .populate({
+      path: "userId",
+      select: "name email",
+    })
+    .sort({ createdAt: -1 })
+    .lean()
+    .exec();
 }
 
 // ------------------------------------------------------
