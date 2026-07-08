@@ -5,8 +5,6 @@ const Booking = require('../models/Booking');
 //------------------------------------------------------
 // LIST ALL BOOKINGS
 // ------------------------------------------------------
-
-
 async function listBookings() {
   return Booking.find()
     .populate({
@@ -172,10 +170,6 @@ async function getMyBookings(userId) {
     .sort({ createdAt: -1 });
 }
 
-
-// ------------------------------------------------------
-// UPDATE BOOKING (Only metadata, not seat logic)
-// ------------------------------------------------------
 // In bookingsService.js
 async function updateBooking(bookingId, data) {
   const allowed = ['userName', 'seats']; // Add 'seats'
@@ -195,50 +189,8 @@ async function updateBooking(bookingId, data) {
 }
 
 
-// async function cancelBooking(bookingId, userId) {
-//   console.log("bookingId:", bookingId);
-// console.log("userId:", userId);
-  
-//   // Find booking
-//   const booking = await Booking.findById(bookingId);
-
-//   if (!booking) {
-//     return null;
-//   }
-
-//   // Check booking ownership
-//   if (booking.userId.toString() !== userId) {
-//     throw new Error("You are not authorized to cancel this booking.");
-//   }
-
-//   // Only pending bookings can be cancelled
-//   if (booking.status !== "PENDING") {
-//     throw new Error("Only pending bookings can be cancelled.");
-//   }
-
-//   // Update booking status
-//   booking.status = "CANCELLED";
-//   await booking.save();
-
-//   // Release reserved seats
-//   await Show.findByIdAndUpdate(
-//     booking.showId,
-//     {
-//       $inc: {
-//         reservedSeats: -booking.seats,
-//       },
-//     },
-//     { new: true }
-//   );
-
-//   return booking;
-// }
-
-
 
 async function cancelBooking(bookingId, userId) {
-  // console.log("bookingId:", bookingId);
-  // console.log("Logged In User:", userId);
 
   const booking = await Booking.findById(bookingId);
 

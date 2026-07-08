@@ -13,10 +13,10 @@ router.use('/bookings', bookingRoutes);
 
 // Handle 404 for routes that don't exist 
 
-// router.use('*', (req, res) => {
-//   res.status(404).json({ 
-//     message: 'Route not found',
-//     requestedUrl: req.originalUrl 
-//   });
-// });
+router.use('*', (req, res) => {
+  res.status(404).json({ 
+    message: 'Route not found',
+    requestedUrl: req.originalUrl 
+  });
+});
 module.exports = router;

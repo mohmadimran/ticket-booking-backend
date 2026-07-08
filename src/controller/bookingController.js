@@ -127,8 +127,6 @@ async function updateBooking(req, res) {
 }
 
 async function cancelBooking(req, res) {
-// console.log("Booking ID:", req.params.id);
-// console.log("User:", req.user);
 
   try {
     const booking = await bookingsService.cancelBooking(
