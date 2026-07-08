@@ -152,30 +152,19 @@ async function createBooking({
 
     return booking;
   } 
-  // catch (err) {
-  //   await Show.findByIdAndUpdate(showId, {
-  //     $inc: {
-  //       reservedSeats: -seats,
-  //     },
-  //   });
-
-  //   throw {
-  //     status: 500,
-  //     message: "Failed to create booking",
-  //   };
-  // }
   catch (err) {
-    console.log("dfine schema error",err);
-
-    await Show.findByIdAndUpdate(showId,{
-        $inc:{
-            reservedSeats:-seats
-        }
+    await Show.findByIdAndUpdate(showId, {
+      $inc: {
+        reservedSeats: -seats,
+      },
     });
 
-    throw err;
-}
-}
+    throw {
+      status: 500,
+      message: "Failed to create booking",
+    };
+  }
+ }
 //  get my booking to the user
 async function getMyBookings(userId) {
   return Booking.find({ userId })
@@ -206,37 +195,77 @@ async function updateBooking(bookingId, data) {
 }
 
 
+// async function cancelBooking(bookingId, userId) {
+//   console.log("bookingId:", bookingId);
+// console.log("userId:", userId);
+  
+//   // Find booking
+//   const booking = await Booking.findById(bookingId);
+
+//   if (!booking) {
+//     return null;
+//   }
+
+//   // Check booking ownership
+//   if (booking.userId.toString() !== userId) {
+//     throw new Error("You are not authorized to cancel this booking.");
+//   }
+
+//   // Only pending bookings can be cancelled
+//   if (booking.status !== "PENDING") {
+//     throw new Error("Only pending bookings can be cancelled.");
+//   }
+
+//   // Update booking status
+//   booking.status = "CANCELLED";
+//   await booking.save();
+
+//   // Release reserved seats
+//   await Show.findByIdAndUpdate(
+//     booking.showId,
+//     {
+//       $inc: {
+//         reservedSeats: -booking.seats,
+//       },
+//     },
+//     { new: true }
+//   );
+
+//   return booking;
+// }
+
+
+
 async function cancelBooking(bookingId, userId) {
-  // Find booking
+  // console.log("bookingId:", bookingId);
+  // console.log("Logged In User:", userId);
+
   const booking = await Booking.findById(bookingId);
 
   if (!booking) {
     return null;
   }
 
-  // Check booking ownership
-  if (booking.userId.toString() !== userId) {
+  console.log("Booking Owner:", booking.userId.toString()); // <-- Add this
+
+  if (booking.userId.toString() !== userId.toString()) {
     throw new Error("You are not authorized to cancel this booking.");
   }
 
-  // Only pending bookings can be cancelled
   if (booking.status !== "PENDING") {
     throw new Error("Only pending bookings can be cancelled.");
   }
 
-  // Update booking status
   booking.status = "CANCELLED";
   await booking.save();
 
-  // Release reserved seats
   await Show.findByIdAndUpdate(
     booking.showId,
     {
       $inc: {
         reservedSeats: -booking.seats,
       },
-    },
-    { new: true }
+    }
   );
 
   return booking;
@@ -268,8 +297,6 @@ module.exports = {
   createBooking,
   getMyBookings,
   confirmBooking,
-  failBooking,
-  getBooking,
   listBookings,
   updateBooking,
   cancelBooking,

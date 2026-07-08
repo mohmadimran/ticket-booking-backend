@@ -1,8 +1,9 @@
 const bookingsService = require('../servicess/bookingServices');
 
-// -----------------------------------------------
+
+
 // GET /api/bookings  --> List all bookings for admin
-// -----------------------------------------------
+
 async function listBookings(req, res) {
   try {
     if (req.user.role !== 'ADMIN') {
@@ -16,10 +17,6 @@ async function listBookings(req, res) {
   }
 }
 
-
-// -----------------------------------------------
-// GET /api/bookings/:id --> Get a booking by ID
-// -----------------------------------------------
 // confirm booking by admin
 
 async function confirmBooking(req,res){
@@ -130,6 +127,9 @@ async function updateBooking(req, res) {
 }
 
 async function cancelBooking(req, res) {
+// console.log("Booking ID:", req.params.id);
+// console.log("User:", req.user);
+
   try {
     const booking = await bookingsService.cancelBooking(
       req.params.id,
