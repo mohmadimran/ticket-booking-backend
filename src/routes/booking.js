@@ -34,28 +34,6 @@ router.put(
   bookingsController.rejectBooking
 );
 
-// Confirm booking
-// router.post(
-//   "/admin/confirm/:id",
-//   authenticate,
-//   authorize("ADMIN"),
-//   bookingsController.confirmBooking
-// );
-
-// cancle booking
-
-// router.post(
-//   "/admin/cancel/:id",
-//   authenticate,
-//   authorize("ADMIN"),
-//   bookingsController.failBooking
-// );
-// router.delete(
-//   "/admin/delete/:id",
-//   authenticate,
-//   authorize("ADMIN"),
-//   bookingsController.cancelBooking
-// );
 
 /* ===========================
    USER ROUTES
@@ -69,7 +47,7 @@ router.post(
   bookingsController.createBooking
 );
 
-// My bookings
+//get  My all bookings
 router.get(
   "/user/my-bookings",
   authenticate,
@@ -77,13 +55,6 @@ router.get(
   bookingsController.getMyBookings
 );
 
-// Booking details
-// router.get(
-//   "/user/detail/:id",
-//   authenticate,
-//   authorize("USER"),
-//   bookingsController.getBooking
-// );
 
 // Update booking
 router.put(
@@ -93,26 +64,12 @@ router.put(
   bookingsController.updateBooking
 );
 
-// Cancel booking
-// router.delete(
-//   "/user/delete:id",
-//   authenticate,
-//   authorize("USER"),
-//   bookingsController.cancelBooking
-// );
-
+// cancel booking
 router.put(
   "/user/cancel/:id",
   authenticate,
   authorize("USER"),
   bookingsController.cancelBooking
-);
-
-router.put(
-  "/user/update/:id",
-  authenticate,
-  authorize("USER"),
-  bookingsController.updateBooking
 );
 
 module.exports = router;

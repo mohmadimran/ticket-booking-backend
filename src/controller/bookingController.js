@@ -20,23 +20,44 @@ async function listBookings(req, res) {
 // -----------------------------------------------
 // GET /api/bookings/:id --> Get a booking by ID
 // -----------------------------------------------
-async function getBooking(req, res) {
-  try {
-    const booking = await bookingsService.getBooking(req.params.id);
-    if (!booking) return res.status(404).json({ error: "Booking not found" });
+// confirm booking by admin
 
-    if (
-      booking.userId.toString() !== req.user.id &&
-      req.user.role !== 'ADMIN'
-    ) {
-      return res.status(403).json({ error: "Forbidden" });
+async function confirmBooking(req,res){
+ try {
+
+        const booking =
+            await bookingsService.confirmBooking(req.params.id);
+
+        res.json(booking);
+
+    } catch (err) {
+
+        res.status(400).json({
+            error: err.message
+        });
+
     }
 
-    res.json(booking);
-  } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
-  }
 }
+
+async function rejectBooking(req,res) {
+    try {
+
+        const booking =
+            await bookingsService.rejectBooking(req.params.id);
+
+        res.json(booking);
+
+    } catch (err) {
+
+        res.status(400).json({
+            error: err.message
+        });
+
+    }
+
+}
+
 
 // -----------------------------------------------
 // POST /api/bookings/:showId  --> Create booking by user
@@ -92,49 +113,6 @@ async function getMyBookings(req, res) {
   }
 }
 
-// -----------------------------------------------
-// POST /api/bookings/:id/confirm --> Confirm booking
-// -----------------------------------------------
-// async function confirmBooking(req, res) {
-//   try {
-//     const booking = await bookingsService.getBooking(req.params.id);
-
-//     if (!booking) return res.status(404).json({ error: "Booking not found" });
-
-//     if (booking.userId.toString() !== req.user.id) {
-//       return res.status(403).json({ error: "Forbidden" });
-//     }
-
-//     const updated = await bookingsService.confirmBooking(req.params.id);
-//     res.json(updated);
-
-//   } catch (err) {
-//     res.status(err.status || 500).json({ error: err.message });
-//   }
-// }
-
-// -----------------------------------------------
-// POST /api/bookings/:id/fail --> Mark booking failed
-// -----------------------------------------------
-// async function failBooking(req, res) {
-//   try {
-//     const booking = await bookingsService.getBooking(req.params.id);
-//     if (!booking) return res.status(404).json({ error: 'Booking not found' });
-
-//     if (booking.userId.toString() !== req.user.id) {
-//       return res.status(403).json({ error: 'Forbidden' });
-//     }
-
-//     const updated = await bookingsService.failBooking(req.params.id);
-//     res.json(updated);
-//   } catch (err) {
-//     res.status(err.status || 500).json({ error: err.message });
-//   }
-// }
-
-// -----------------------------------------------
-// PUT /api/bookings/:id --> Update booking
-// -----------------------------------------------
 async function updateBooking(req, res) {
   try {
     const booking = await bookingsService.getBooking(req.params.id);
@@ -151,99 +129,31 @@ async function updateBooking(req, res) {
   }
 }
 
+async function cancelBooking(req, res) {
+  try {
+    const booking = await bookingsService.getBooking(req.params.id);
 
-// -----------------------------------------------
-// DELETE /api/bookings/:id --> Cancel a booking
-// -----------------------------------------------
-// async function cancelBooking(req, res) {
-//   try {
-//     const booking = await bookingsService.getBooking(req.params.id);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
 
-//     if (!booking) return res.status(404).json({ error: "Booking not found" });
-
-//     if (booking.userId.toString() !== req.user.id) {
-//       return res.status(403).json({ error: "Forbidden" });
-//     }
-
-//     await bookingsService.cancelBooking(req.params.id);
-//     res.json({ message: "Booking cancelled successfully" });
-
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// }
-// cancel booking by user
-async function cancelBooking(req,res){
-try {
-
-        const booking = await bookingsService.cancelBooking(
-            req.params.id,
-            req.user.id
-        );
-
-        if (!booking) {
-            return res.status(404).json({
-                error: "Booking not found"
-            });
-        }
-
-        res.json({
-            message: "Booking cancelled successfully"
-        });
-
-    } catch (err) {
-
-        res.status(400).json({
-            error: err.message
-        });
-
-    }
-}
-
-// confirm booking by admin
-
-async function confirmBooking(req,res){
- try {
-
-        const booking =
-            await bookingsService.confirmBooking(req.params.id);
-
-        res.json(booking);
-
-    } catch (err) {
-
-        res.status(400).json({
-            error: err.message
-        });
-
+    if (booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Forbidden" });
     }
 
+    await bookingsService.cancelBooking(req.params.id);
+    res.json({ message: "Booking cancelled successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 }
-async function rejectBooking(req,res) {
-    try {
 
-        const booking =
-            await bookingsService.rejectBooking(req.params.id);
-
-        res.json(booking);
-
-    } catch (err) {
-
-        res.status(400).json({
-            error: err.message
-        });
-
-    }
-
-}
 
 module.exports = {
   listBookings,
-  getBooking,
-  createBooking,
-  updateBooking,
-  getMyBookings,
   confirmBooking,
-  cancelBooking,
-  rejectBooking
+  rejectBooking,
+  createBooking,
+  getMyBookings,
+  updateBooking,
+  cancelBooking
 };
