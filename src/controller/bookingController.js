@@ -131,19 +131,27 @@ async function updateBooking(req, res) {
 
 async function cancelBooking(req, res) {
   try {
-    const booking = await bookingsService.getBooking(req.params.id);
+    const booking = await bookingsService.cancelBooking(
+      req.params.id,
+      req.user.id
+    );
 
-    if (!booking) return res.status(404).json({ error: "Booking not found" });
-
-    if (booking.userId.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Forbidden" });
+    if (!booking) {
+      return res.status(404).json({
+        error: "Booking not found",
+      });
     }
 
-    await bookingsService.cancelBooking(req.params.id);
-    res.json({ message: "Booking cancelled successfully" });
-
+    return res.status(200).json({
+      success: true,
+      message: "Booking cancelled successfully.",
+      booking,
+    });
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(400).json({
+      success: false,
+      error: err.message,
+    });
   }
 }
 
